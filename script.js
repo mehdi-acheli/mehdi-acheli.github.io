@@ -178,7 +178,8 @@ type("now");
     const secs = [...document.querySelectorAll("main section[id]")];
     // at the very bottom (e.g. in Contact on a phone, where the last section cannot reach the top of the screen)
     // the section under the top edge is the previous one: remember "bottom" instead
-    if (scrollY + innerHeight >= document.documentElement.scrollHeight - 4) {
+    // (generous margin: phone browsers resize the viewport as their address bar slides, so "exactly at the bottom" is unreliable)
+    if (scrollY + innerHeight >= document.documentElement.scrollHeight - 150) {
       try { sessionStorage.setItem("langjump", JSON.stringify({ bottom: true, t: Date.now() })); } catch {}
       return;
     }
@@ -206,7 +207,9 @@ type("now");
     if (done) return;
     done = true;
     if (pos && pos.bottom) {
-      scrollTo({ top: document.documentElement.scrollHeight, behavior: "instant" });
+      const toBottom = () => scrollTo({ top: document.documentElement.scrollHeight, behavior: "instant" });
+      toBottom();
+      setTimeout(toBottom, 250); // once late layout changes (fonts, images) have settled
     } else if (pos && target) {
       const r = target.getBoundingClientRect();
       scrollTo({ top: scrollY + r.top + pos.f * r.height, behavior: "instant" });
