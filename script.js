@@ -209,9 +209,7 @@ type("now");
     if (done) return;
     done = true;
     if (pos && pos.bottom) {
-      const toBottom = () => scrollTo({ top: document.documentElement.scrollHeight, behavior: "instant" });
-      toBottom();
-      setTimeout(toBottom, 250); // once late layout changes (fonts, images) have settled
+      scrollTo({ top: document.documentElement.scrollHeight, behavior: "instant" });
     } else if (pos && target) {
       const r = target.getBoundingClientRect();
       scrollTo({ top: scrollY + r.top + pos.f * r.height, behavior: "instant" });
