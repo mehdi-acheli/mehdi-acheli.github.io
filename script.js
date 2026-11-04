@@ -178,8 +178,10 @@ type("now");
     const secs = [...document.querySelectorAll("main section[id]")];
     // at the very bottom (e.g. in Contact on a phone, where the last section cannot reach the top of the screen)
     // the section under the top edge is the previous one: remember "bottom" instead
-    // (generous margin: phone browsers resize the viewport as their address bar slides, so "exactly at the bottom" is unreliable)
-    if (scrollY + innerHeight >= document.documentElement.scrollHeight - 150) {
+    // (judged from what is actually on screen, not from scroll arithmetic: phone browsers resize the viewport
+    // as their address bar slides, so "exactly at the bottom" is unreliable)
+    const last = secs[secs.length - 1];
+    if (last.getBoundingClientRect().bottom <= innerHeight + 20 || scrollY + innerHeight >= document.documentElement.scrollHeight - 150) {
       try { sessionStorage.setItem("langjump", JSON.stringify({ bottom: true, t: Date.now() })); } catch {}
       return;
     }
