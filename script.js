@@ -227,6 +227,8 @@ type("now");
   const theme = document.getElementById("theme");
   const burger = document.getElementById("burger");
   const fit = () => {
+    // measuring briefly un-collapses the nav, which can shrink the page and make the browser clamp the scroll position
+    const y = scrollY;
     nav.classList.remove("compact");
     const room = nav.getBoundingClientRect().right - parseFloat(getComputedStyle(nav).paddingRight);
     if (theme.getBoundingClientRect().right > room + 0.5) {
@@ -238,8 +240,11 @@ type("now");
       burger.textContent = "☰";
       burger.setAttribute("aria-expanded", "false");
     }
+    if (scrollY !== y) scrollTo({ top: y, behavior: "instant" });
   };
   fit();
-  addEventListener("resize", fit);
+  // phones fire resize whenever the address bar slides (e.g. when overscrolling at the bottom): only a change of width matters
+  let lastW = innerWidth;
+  addEventListener("resize", () => { if (innerWidth !== lastW) { lastW = innerWidth; fit(); } });
   if (document.fonts) document.fonts.ready.then(fit);
 })();
